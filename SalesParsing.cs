@@ -20,14 +20,62 @@ namespace SalesFileAnalyzer
             return sales;
         }
 
-        public void DisplayTotalSalesByProduct(List<SalesLineItem> items)
+        public void DisplayTotalSalesByProduct(List<SalesLineItem> sales)
         {
-            
+            Dictionary<string, double> salesByProduct = new Dictionary<string, double>();
+
+            foreach(SalesLineItem sale in sales)
+            {
+                if(!salesByProduct.ContainsKey(sale.ProductName)) salesByProduct[sale.ProductName] = 0;
+
+                salesByProduct[sale.ProductName] += sale.SalesAmount;
+            }
+
+            Console.WriteLine("Total sales by Product:");
+            foreach(KeyValuePair<string, double> productSalesInformation in salesByProduct)
+            {
+                Console.WriteLine($"{productSalesInformation.Key}: ${productSalesInformation.Value:00.00}");
+            }
         }
 
-        public void DisplayTotalSalesByMonth(List<SalesLineItem> items)
+        public void DisplayTotalSalesByMonth(List<SalesLineItem> sales)
         {
-            
+            Dictionary<string, double> salesByMonth = new Dictionary<string, double>();
+            Dictionary<string, string> monthConversion = new Dictionary<string, string>
+            {
+                {"01", "January"},
+                {"02", "February"},
+                {"03", "March"},
+                {"04", "April"},
+                {"05", "May"}, 
+                {"06", "June"},
+                {"07", "July"},
+                {"08", "August"},
+                {"09", "September"},
+                {"10", "October"},
+                {"11", "November"},
+                {"12", "December"}
+            };
+
+            foreach(SalesLineItem sale in sales)
+            {
+                string month = monthConversion[sale.DateOfSale.ToString().Split('-')[1]];
+                if(!salesByMonth.ContainsKey(month)) salesByMonth[month] = 0;
+
+                salesByMonth[month] += sale.SalesAmount;
+            }
+
+            Console.WriteLine("Total sales by Month:");
+            foreach(KeyValuePair<string, double> productSalesInformation in salesByMonth)
+            {
+                string formattedAmount = productSalesInformation.Value.ToString("0.00");
+                for(int i = formattedAmount.Length - 6; i >= 1; i -= 3)
+                {
+                    formattedAmount = formattedAmount.Insert(i, ",");
+                }
+
+                Console.WriteLine($"{productSalesInformation.Key}: ${formattedAmount}");
+            }
         }
 
         public void WriteSalesData(List<SalesLineItem> items)

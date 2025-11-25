@@ -11,6 +11,10 @@
             sales = sp.ReadSalesData("Sales.txt");
 
             Console.WriteLine(String.Join("\n", sales));
+
+            sp.DisplayTotalSalesByProduct(sales);
+
+            sp.DisplayTotalSalesByMonth(sales);
         }
     }
 }
