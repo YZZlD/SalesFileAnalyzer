@@ -29,9 +29,10 @@ namespace SalesFileAnalyzer
             return sales;
         }
 
-        public void DisplayTotalSalesByProduct(List<SalesLineItem> sales)
+        public string DisplayTotalSalesByProduct(List<SalesLineItem> sales, string message = "Total sales by Product:", bool returnData = false)
         {
             Dictionary<string, double> salesByProduct = new Dictionary<string, double>();
+            string data = "";
 
             foreach(SalesLineItem sale in sales)
             {
@@ -40,14 +41,17 @@ namespace SalesFileAnalyzer
                 salesByProduct[sale.ProductName] += sale.SalesAmount;
             }
 
-            Console.WriteLine("Total sales by Product:");
+            Console.WriteLine(message);
             foreach(KeyValuePair<string, double> productSalesInformation in SortResult(salesByProduct))
             {
                 Console.WriteLine($"{productSalesInformation.Key}: ${productSalesInformation.Value:00.00}");
+                if(returnData) data += $"{productSalesInformation.Key}: ${productSalesInformation.Value:00.00};";
             }
+
+            return data;
         }
 
-        public void DisplayTotalSalesByMonth(List<SalesLineItem> sales)
+        public string DisplayTotalSalesByMonth(List<SalesLineItem> sales, string message = "Total sales by Month:", bool returnData = false)
         {
             Dictionary<string, double> salesByMonth = new Dictionary<string, double>();
             Dictionary<string, string> monthConversion = new Dictionary<string, string>
@@ -65,6 +69,7 @@ namespace SalesFileAnalyzer
                 {"11", "November"},
                 {"12", "December"}
             };
+            string data = "";
 
             foreach(SalesLineItem sale in sales)
             {
@@ -74,7 +79,7 @@ namespace SalesFileAnalyzer
                 salesByMonth[month] += sale.SalesAmount;
             }
 
-            Console.WriteLine("Total sales by Month:");
+            Console.WriteLine(message);
             foreach(KeyValuePair<string, double> productSalesInformation in SortResult(salesByMonth))
             {
                 string formattedAmount = productSalesInformation.Value.ToString("0.00");
@@ -84,12 +89,40 @@ namespace SalesFileAnalyzer
                 }
 
                 Console.WriteLine($"{productSalesInformation.Key}: ${formattedAmount}");
+                if(returnData) data += $"{productSalesInformation.Key}: ${formattedAmount};";
             }
+
+            return data;
         }
 
-        public void WriteSalesData(List<SalesLineItem> items)
+        public void WriteSalesData(string[] filterList, List<SalesLineItem> productInformation, string salesByProduct, string salesByMonth, string filePath)
         {
-            
+
+            using(StreamWriter sw = new StreamWriter(Path.Combine(Directory.GetCurrentDirectory(), $"output\\{filePath}")))
+            {
+                sw.WriteLine($"Filtered product(s): {String.Join(", ", filterList)}");
+                
+                sw.WriteLine("\n");
+                sw.WriteLine("Products Information:");
+                foreach(SalesLineItem sale in productInformation)
+                {
+                    sw.WriteLine(sale);
+                }
+
+                sw.WriteLine("\n");
+                sw.WriteLine("Total sales by Filtered product: ");
+                foreach(string salesProduct in salesByProduct.Split(';'))
+                {
+                    sw.WriteLine(salesProduct);
+                }
+
+                sw.WriteLine("\n");
+                sw.WriteLine("Total sales by Filtered product group by Month: ");
+                foreach(string salesMonth in salesByMonth.Split(';'))
+                {
+                    sw.WriteLine(salesMonth);
+                }
+            }
         }
 
         private IEnumerable<KeyValuePair<string, double>> SortResult(IEnumerable<KeyValuePair<string, double>> result)
