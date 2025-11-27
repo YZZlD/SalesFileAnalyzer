@@ -23,6 +23,14 @@
             Console.Write("\n\n\n");
 
             sp.DisplayTotalSalesByMonth(sales);
+
+            List<SalesLineItem> filteredSales = SalesFiltering.FilterList(sales, ["Product1", "Product3", "Product5"]);
+
+            sp.DisplayTotalSalesByProduct(filteredSales);
+            Console.Write("\n\n\n");
+
+            sp.DisplayTotalSalesByMonth(filteredSales);
+            Console.Write("\n\n\n");
         }
     }
 }

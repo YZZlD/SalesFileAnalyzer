@@ -1,6 +1,6 @@
 namespace SalesFileAnalyzer
 {
-    class SalesLineItem
+    public class SalesLineItem
     {
         public string ProductName { get; set; }
         public DateOnly DateOfSale { get; set; }
