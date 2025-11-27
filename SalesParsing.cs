@@ -6,16 +6,25 @@ namespace SalesFileAnalyzer
         {
             List<SalesLineItem> sales = new List<SalesLineItem>();
 
-            using(StreamReader sr = new StreamReader(Path.Combine(Directory.GetCurrentDirectory(), $"input\\{filePath}")))
+            try
             {
-                string line = "";
-                while((line = sr.ReadLine()) != null)
+               using(StreamReader sr = new StreamReader(Path.Combine(Directory.GetCurrentDirectory(), $"input\\{filePath}")))
                 {
-                    string[] lineData = line.Split(',');
-                    SalesLineItem item = new SalesLineItem(){ProductName = lineData[0], DateOfSale = DateOnly.Parse(lineData[1]), SalesAmount = double.Parse(lineData[2])};
-                    sales.Add(item);
-                }
+                    string line = "";
+                    while((line = sr.ReadLine()) != null)
+                    {
+                        string[] lineData = line.Split(',');
+                        SalesLineItem item = new SalesLineItem(){ProductName = lineData[0], DateOfSale = DateOnly.Parse(lineData[1]), SalesAmount = double.Parse(lineData[2])};
+                        sales.Add(item);
+                    }
+                } 
             }
+            catch(IOException ioe)
+            {
+                Console.WriteLine($"File at {Path.Combine(Directory.GetCurrentDirectory(), $"input\\{filePath}")} could not be found.");
+                Environment.Exit(-1);
+            }
+            
 
             return sales;
         }
@@ -32,7 +41,7 @@ namespace SalesFileAnalyzer
             }
 
             Console.WriteLine("Total sales by Product:");
-            foreach(KeyValuePair<string, double> productSalesInformation in salesByProduct)
+            foreach(KeyValuePair<string, double> productSalesInformation in SortResult(salesByProduct))
             {
                 Console.WriteLine($"{productSalesInformation.Key}: ${productSalesInformation.Value:00.00}");
             }
@@ -66,7 +75,7 @@ namespace SalesFileAnalyzer
             }
 
             Console.WriteLine("Total sales by Month:");
-            foreach(KeyValuePair<string, double> productSalesInformation in salesByMonth)
+            foreach(KeyValuePair<string, double> productSalesInformation in SortResult(salesByMonth))
             {
                 string formattedAmount = productSalesInformation.Value.ToString("0.00");
                 for(int i = formattedAmount.Length - 6; i >= 1; i -= 3)
@@ -81,6 +90,11 @@ namespace SalesFileAnalyzer
         public void WriteSalesData(List<SalesLineItem> items)
         {
             
+        }
+
+        private IEnumerable<KeyValuePair<string, double>> SortResult(IEnumerable<KeyValuePair<string, double>> result)
+        {
+            return from entry in result orderby entry.Value descending select entry;
         }
     }
 }

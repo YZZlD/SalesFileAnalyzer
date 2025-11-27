@@ -6,13 +6,21 @@
         {
             List<SalesLineItem> sales = new List<SalesLineItem>();
 
+            string inputPath;
+            string outputPath;
+
+            Console.Write("Enter the input file path: ");
+            inputPath = Console.ReadLine();
+
+            Console.Write("Enter the output file path: ");
+            outputPath = Console.ReadLine();
+
             SalesParsing sp = new SalesParsing();
 
-            sales = sp.ReadSalesData("Sales.txt");
-
-            Console.WriteLine(String.Join("\n", sales));
+            sales = sp.ReadSalesData(inputPath);
 
             sp.DisplayTotalSalesByProduct(sales);
+            Console.Write("\n\n\n");
 
             sp.DisplayTotalSalesByMonth(sales);
         }
