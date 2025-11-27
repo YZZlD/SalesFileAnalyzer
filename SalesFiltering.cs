@@ -4,7 +4,7 @@ namespace SalesFileAnalyzer
     {
         public static List<SalesLineItem> FilterList(List<SalesLineItem> salesList, string[] productNames)
         {
-            var query = from entry in salesList where productNames.Contains(entry.ProductName) select entry;
+            var query = from entry in salesList where productNames.Contains(entry.ProductName.ToLower()) select entry;
             List<SalesLineItem> filteredList = query.ToList<SalesLineItem>();
 
             try

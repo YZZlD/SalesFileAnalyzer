@@ -1,4 +1,4 @@
-Filtered product(s): Product1, Product3, Product5
+Filtered product(s): product1, product3, product5
 
 
 Products Information:

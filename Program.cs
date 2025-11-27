@@ -26,7 +26,7 @@
             sp.DisplayTotalSalesByMonth(sales);
 
             Console.Write("\n\nEnter search strings seperated by commas: ");
-            products = Console.ReadLine().Replace(" ", "").Split(",");
+            products = Console.ReadLine().Replace(" ", "").ToLower().Split(",");
 
             List<SalesLineItem> filteredSales = SalesFiltering.FilterList(sales, products);
 
